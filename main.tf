@@ -18,3 +18,11 @@ resource "aws_instance" "airbnb-prod-server" {
     Name = "airbnb-prod-server"
   }
 }
+resource "aws_instance" "airbnb-dev-server" {
+  ami           =var.ami_id
+  instance_type = var.instance_type
+
+  tags = {
+    Name = "airbnb-dev-server"
+  }
+}
