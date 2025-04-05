@@ -28,8 +28,8 @@ pipeline {
 
         stage('terraform init') {
             steps {
-                // Use only "-migrate-state" for state migration
-                sh 'terraform init -input=false -migrate-state'
+                // Use "-force-copy" to automate state migration
+                sh 'terraform init -input=false -force-copy'
             }
         }
 
