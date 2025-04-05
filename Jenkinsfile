@@ -1,15 +1,15 @@
 def COLOR_MAP = [
     'SUCCESS': 'good',
     'FAILURE': 'danger',
-    ]
-    
+]
+
 pipeline {
     agent any
-    
+
     tools {
         terraform ('Terraform')
     }
-    
+
     environment {
         // Credentials for Prod environment
         AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID') 
@@ -25,20 +25,20 @@ pipeline {
                 sh 'ls'
             }
         }
-        
+
         stage('terraform init') {
             steps {
-                // Automate backend migration with "yes" and disable interactive input
-                sh 'yes | terraform init -input=false -reconfigure'
+                // Automate backend migration with "-migrate-state"
+                sh 'terraform init -input=false -reconfigure -migrate-state'
             }
         }
-        
+
         stage('terraform plan') {
             steps {
                 sh 'terraform plan'
             }
         }
-        
+
         stage('terraform action to apply/destroy the plan') {
             steps {
                 sh 'terraform ${action} --auto-approve'
