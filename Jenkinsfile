@@ -16,6 +16,14 @@ pipeline {
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
     }
 
+    parameters {
+        choice(
+            name: 'ACTION',
+            choices: ['apply', 'destroy'],
+            description: 'Choose whether to apply or destroy the Terraform plan'
+        )
+    }
+
     stages {
         stage('SCM checkout') {
             steps {
@@ -39,9 +47,19 @@ pipeline {
             }
         }
 
-        stage('terraform action to apply/destroy the plan') {
+        stage('terraform action') {
             steps {
-                sh 'terraform ${action} --auto-approve'
+                script {
+                    if (params.ACTION == 'apply') {
+                        echo 'Applying the Terraform plan...'
+                        sh 'terraform apply --auto-approve'
+                    } else if (params.ACTION == 'destroy') {
+                        echo 'Destroying the Terraform infrastructure...'
+                        sh 'terraform destroy --auto-approve'
+                    } else {
+                        error "Invalid action: ${params.ACTION}"
+                    }
+                }
             }
         }
     }
