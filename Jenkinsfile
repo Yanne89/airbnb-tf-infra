@@ -28,8 +28,8 @@ pipeline {
 
         stage('terraform init') {
             steps {
-                // Automate backend migration with "-migrate-state"
-                sh 'terraform init -input=false -reconfigure -migrate-state'
+                // Use only "-migrate-state" for state migration
+                sh 'terraform init -input=false -migrate-state'
             }
         }
 
