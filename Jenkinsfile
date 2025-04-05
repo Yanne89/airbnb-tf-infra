@@ -1,3 +1,8 @@
+def COLOR_MAP = [
+    'SUCCESS': 'good',
+    'FAILURE': 'danger',
+    ]
+
 pipeline {
     agent any
     
@@ -39,6 +44,13 @@ pipeline {
             steps {
                 sh 'terraform ${action} --auto-approve'
             }
+        }
+    }
+
+    post { 
+        always { 
+            echo 'sending build result!'
+            slackSend channel: "#et-devops-team", color: COLOR_MAP[currentBuild.currentResult], message: "Build Started Manuela: ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
         }
     }
 }
